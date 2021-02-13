@@ -21,19 +21,35 @@ namespace login
 
         public static void InsertToDB(AccountModel doc)
         {
-            var returnDoc = new BsonDocument { { "Name", doc.Name }, { "Pass", doc.Pass }};
-            collection.InsertOne(returnDoc);
+            collection.InsertOne(doc.ToBson());
         }
 
-        public static IEnumerable<AccountModel> GetInDB()
+        public static IEnumerable<AccountModel> GetInDB(AccountModel User)
         {
-            var DBList = collection.Find(new BsonDocument()).ToList();
+            List<BsonDocument> DBList;
+
+            if (User == null)
+            {
+                System.Console.WriteLine("null");
+                DBList = collection.Find(new BsonDocument()).ToList();
+            } else
+            {
+                DBList = collection.Find(new BsonDocument(User.ToBson())).ToList();
+            }
+
+
 
             var AccountList = new List<AccountModel>();
 
             foreach (var item in DBList)
             {
-                AccountList.Add(new AccountModel(item["Name"].AsString, item["Pass"].AsString));
+                AccountModel account = new AccountModel();
+
+                account.Name = item["Name"].AsString;
+
+                account.Pass = item["Pass"].AsString;
+
+                AccountList.Add(account);
             }
 
             return AccountList;

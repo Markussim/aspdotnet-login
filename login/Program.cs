@@ -13,6 +13,7 @@ namespace login
     {
         public static void Main(string[] args)
         {
+            MongoConnection.ConnectToDB();
             CreateHostBuilder(args).Build().Run();
         }
 

@@ -23,8 +23,9 @@ namespace login.Controllers
         [HttpPost]
         public IActionResult Post(AccountModel model)
         {
-            System.Console.WriteLine(model.Name);
-            return new ObjectResult(model);
+            
+            MongoConnection.InsertToDB(model);
+            return new ObjectResult(MongoConnection.GetInDB(null));
         }
     }
 
