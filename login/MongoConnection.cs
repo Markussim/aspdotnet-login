@@ -7,7 +7,7 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 
 
-namespace webcrawler
+namespace login
 {
     class MongoConnection
     {
@@ -15,37 +15,28 @@ namespace webcrawler
         public static void ConnectToDB()
         {
             MongoClient dbClient = new MongoClient("mongodb://localhost:27017/");
-
-
-
-            IMongoDatabase database = dbClient.GetDatabase("AntennsCrawler");
-            collection = database.GetCollection<BsonDocument>("Links");
+            IMongoDatabase database = dbClient.GetDatabase("LoginSystem");
+            collection = database.GetCollection<BsonDocument>("accounts");
         }
 
-        public static void InsertToDB(BsonDocument doc)
+        public static void InsertToDB(AccountModel doc)
         {
-            collection.InsertOne(doc);
+            var returnDoc = new BsonDocument { { "Name", doc.Name }, { "Pass", doc.Pass }};
+            collection.InsertOne(returnDoc);
         }
 
-        public static void UpdateDB(string link)
+        public static IEnumerable<AccountModel> GetInDB()
         {
-            HtmlNode filter = Builders<BsonDocument>.Filter.Eq("url", link);
-            HtmlNode update = Builders<BsonDocument>.Update.Set("visited", true);
-            collection.UpdateOne(filter, update);
-        }
+            var DBList = collection.Find(new BsonDocument()).ToList();
 
+            var AccountList = new List<AccountModel>();
 
-        public static List<Link> ReadAllDB()
-        {
-            List<Link> links = new List<Link>();
-
-            HtmlNode documents = collection.Find(new BsonDocument()).ToList();
-            foreach (BsonDocument doc in documents)
+            foreach (var item in DBList)
             {
-                links.Add(new Link(doc["url"].AsString, doc["origin"].AsString, doc["visited"].AsBoolean));
+                AccountList.Add(new AccountModel(item["Name"].AsString, item["Pass"].AsString));
             }
 
-            return links;
+            return AccountList;
         }
     }
 }

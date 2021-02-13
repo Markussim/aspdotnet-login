@@ -43,7 +43,17 @@ namespace login
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "login v1"));
             }
 
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "file_upload v1"));
+            }
+
             app.UseRouting();
+
+            app.UseCors(builder =>
+                builder.WithOrigins("https://marksism.space"));
 
             app.UseAuthorization();
 
@@ -51,6 +61,9 @@ namespace login
             {
                 endpoints.MapControllers();
             });
+
+            app.UseFileServer("/data");
         }
+        
     }
 }
