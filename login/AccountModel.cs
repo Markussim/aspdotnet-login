@@ -9,8 +9,16 @@ namespace login
         public string Name { get; set; }
         public string Pass { get; set; }
 
-        public BsonDocument ToBson() {
-            return new BsonDocument { { "Name", Name }, { "Pass", Pass } };
+        private BsonDocument cacheDoc;
+
+        public BsonDocument ToBson()
+        {
+            if (cacheDoc == null)
+            {
+                cacheDoc = new BsonDocument { { "Name", Name }, { "Pass", Pass } };
+            }
+
+            return cacheDoc; 
         }
     }
 }

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script>
-      fetch("/post", {
+      fetch("/signIn", {
         method: "post",
         headers: {
           Accept: "application/json",
@@ -14,13 +14,13 @@
 
         //make sure to serialize your JSON body
         body: JSON.stringify({
-          Name: "myName",
+          Name: "myName22",
           Pass: "myPassword",
         }),
       }).then(async (response) => {
-        console.log(await response.text());
+        document.getElementById("out").innerText = await response.text();
       });
     </script>
   </head>
-  <body></body>
+  <body id="out"></body>
 </html>

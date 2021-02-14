@@ -9,8 +9,8 @@ using Newtonsoft.Json.Linq;
 namespace login.Controllers
 {
     [ApiController]
-    [Route("/post")]
-    public class PostController : ControllerBase
+    [Route("/signIn")]
+    public class SignInController : ControllerBase
     {
 
         [HttpGet]
@@ -24,8 +24,7 @@ namespace login.Controllers
         public IActionResult Post(AccountModel model)
         {
             
-            MongoConnection.InsertToDB(model);
-            return new ObjectResult(MongoConnection.GetInDB(null));
+            return Content(MongoConnection.GetInDB(model).Any().ToString());
         }
     }
 
