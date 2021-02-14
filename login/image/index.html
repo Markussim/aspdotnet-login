@@ -4,23 +4,51 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <script>
-      fetch("/signin", {
-        method: "post",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
+    <script src="http://www.myersdaily.org/joseph/javascript/md5.js"></script>
+    <script defer>
+      window.onload = function () {
+        document.getElementById("AnId").addEventListener("input", runOnLoad);
+      };
 
-        //make sure to serialize your JSON body
-        body: JSON.stringify({
-          Name: "myName222",
-          Pass: "myPassword",
-        }),
-      }).then(async (response) => {
-        document.getElementById("out").innerText = await response.text();
-      });
+      function runOnLoad() {
+        console.log("Test");
+      }
+
+      function loginUser() {
+        let form = document.getElementById("LoginForm");
+        let name = form.children[0].value;
+        let pass = md5(form.children[1].value);
+        let path = form.children[3].checked ? "/register" : "/signin";
+
+        console.log(name + " " + pass + " " + path);
+        fetch(path, {
+          method: "post",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+
+          //make sure to serialize your JSON body
+          body: JSON.stringify({
+            Name: name,
+            Pass: pass,
+          }),
+        }).then(async (response) => {
+          let resopneText = await response.text();
+          document.getElementById("out").innerText = resopneText;
+          if (resopneText == "True") window.location.reload(true);
+        });
+      }
     </script>
   </head>
-  <body id="out"></body>
+  <body>
+    <div id="out"></div>
+    <form id="LoginForm" onsubmit="loginUser(); return false;">
+      <input type="text" name="Name" />
+      <input type="password" name="Pass" />
+      <input type="password" hidden />
+      <input type="checkbox" id="AnId" /> Register?
+      <input type="submit" value="submit" />
+    </form>
+  </body>
 </html>
