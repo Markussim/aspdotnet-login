@@ -21,7 +21,7 @@ namespace login.Controllers
 
             if (Sessions.CheckIfLoggedIn(HttpContext.Session.GetString("User")))
             {
-                loginForm = Content("You are the doctor");
+                loginForm = Content("You are logged in");
             }
             else
             {
