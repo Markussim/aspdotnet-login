@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace login.Controllers
 {
@@ -16,18 +17,33 @@ namespace login.Controllers
         [HttpGet]
         public ActionResult Get()
         {
+            ActionResult loginForm;
 
-            return Content(System.IO.File.ReadAllText(@"./image/index.html"), "text/html");
+            if (Sessions.CheckIfLoggedIn(HttpContext.Session.GetString("User")))
+            {
+                loginForm = Content("You are the doctor");
+            }
+            else
+            {
+                loginForm = Content(System.IO.File.ReadAllText(@"./image/index.html"), "text/html");
+            }
+
+            return loginForm;
         }
 
         [HttpPost]
         public IActionResult Post(AccountModel model)
         {
-            
-            return Content(MongoConnection.GetInDB(model).Any().ToString());
+            bool loginSuccess = Login.SignIn(model);
+
+            if (loginSuccess)
+            {
+                String ID = RandomString.GetRandomString(256);
+                HttpContext.Session.SetString("User", ID);
+                Sessions.AddUser(ID);
+            }
+            return Content(loginSuccess.ToString());
         }
     }
-
-   
 
 }

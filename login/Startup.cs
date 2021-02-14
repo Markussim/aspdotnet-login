@@ -25,11 +25,19 @@ namespace login
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromDays(1);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "login", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "login är coolt", Version = "v193487589" });
             });
         }
 
@@ -57,6 +65,8 @@ namespace login
 
             app.UseAuthorization();
 
+            app.UseSession();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -64,6 +74,6 @@ namespace login
 
             app.UseFileServer("/data");
         }
-        
+
     }
 }
